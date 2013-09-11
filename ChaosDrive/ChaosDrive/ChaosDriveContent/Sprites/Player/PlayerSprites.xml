@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[SpriteLibrary.Sprite]">
+    <Item>
+      <Name>PlayerIdle</Name>
+      <FPS>0</FPS>
+      <TextureAsset>Images\Player\FAX-44 MkIII</TextureAsset>
+      <RectangleAsset>Sprites\Player\PlayerIdleRects</RectangleAsset>
+    </Item>
+  </Asset>
+</XnaContent>
