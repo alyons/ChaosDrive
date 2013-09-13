@@ -77,9 +77,13 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\SpriteExtension.cs" />
+    <Compile Include="Game Objects\Background\BackgroundController.cs" />
     <Compile Include="Game Objects\Bullets\Bullet.cs" />
     <Compile Include="Game Objects\Bullets\BulletController.cs" />
     <Compile Include="Game Objects\Bullets\PlayerBullet.cs" />
+    <Compile Include="Game Objects\Effects\Particle.cs" />
+    <Compile Include="Game Objects\Effects\ParticleController.cs" />
     <Compile Include="Game Objects\Enemies\BasicEnemy.cs" />
     <Compile Include="Game Objects\Enemies\EnemyController.cs" />
     <Compile Include="Game Objects\Enemies\TestEnemyController.cs" />
@@ -87,6 +91,7 @@
     <Compile Include="Game Objects\Enemies\Enemy.cs" />
     <Compile Include="Game Objects\Player\Player.cs" />
     <Compile Include="Game Objects\ITimeAdjuster.cs" />
+    <Compile Include="Game Objects\Player\PlayerController.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
@@ -156,9 +161,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game Objects\Background\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

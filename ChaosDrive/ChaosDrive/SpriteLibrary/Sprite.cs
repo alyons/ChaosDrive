@@ -307,6 +307,9 @@ namespace SpriteLibrary
         {
             opaqueData.Clear();
 
+            Color[] pixels = new Color[Texture.Width * Texture.Height];
+            Texture.GetData<Color>(pixels);
+
             for (int q = 0; q < Rectangles.Count; q++)
             {
                 int x = Rectangles[q].X;
@@ -314,9 +317,6 @@ namespace SpriteLibrary
                 int h = Rectangles[q].Height;
                 int w = Rectangles[q].Width;
                 bool[,] data = new bool[w, h];
-                Color[] pixels = new Color[Texture.Width * Texture.Height];
-                Texture.GetData<Color>(pixels);
-
                 for (int i = x; i < x + w; i++)
                     for (int j = y; j < y + h; j++)
                         data[i - x, j - y] = (pixels[i + j * Texture.Width].A >= alpha);
@@ -338,6 +338,9 @@ namespace SpriteLibrary
         {
             opaqueData.Clear();
 
+            Color[] pixels = new Color[Texture.Width * Texture.Height];
+            Texture.GetData<Color>(pixels);
+
             for (int q = 0; q < Rectangles.Count; q++)
             {
                 int x = Rectangles[q].X;
@@ -345,8 +348,6 @@ namespace SpriteLibrary
                 int h = Rectangles[q].Height;
                 int w = Rectangles[q].Width;
                 bool[,] data = new bool[w, h];
-                Color[] pixels = new Color[Texture.Width * Texture.Height];
-                Texture.GetData<Color>(pixels);
 
                 for (int i = x; i < x + w; i++)
                     for (int j = y; j < y + h; j++)
@@ -369,6 +370,9 @@ namespace SpriteLibrary
         {
             opaqueData.Clear();
 
+            Color[] pixels = new Color[Texture.Width * Texture.Height];
+            Texture.GetData<Color>(pixels);
+
             for (int q = 0; q < Rectangles.Count; q++)
             {
                 int x = Rectangles[q].X;
@@ -376,8 +380,6 @@ namespace SpriteLibrary
                 int h = Rectangles[q].Height;
                 int w = Rectangles[q].Width;
                 bool[,] data = new bool[w, h];
-                Color[] pixels = new Color[Texture.Width * Texture.Height];
-                Texture.GetData<Color>(pixels);
 
                 for (int i = x; i < x + w; i++)
                     for (int j = y; j < y + h; j++)
