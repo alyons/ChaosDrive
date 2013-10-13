@@ -25,9 +25,33 @@ namespace ChaosDrive.Game_Objects.Enemies
             buildUp += (int)elapsedTime;
             if (random.Next(buildUp) > enemySpawnChance)
             {
-                Enemies.Add(new BasicEnemy(bounds, new Vector2(random.Next(700) + 50, 1)));
+                switch (random.Next(3))
+                {
+                    case 0:
+                        CreateBezierEnemy();
+                        break;
+                    case 1:
+                        CreateBezierEnemyEX();
+                        break;
+                    default:
+                        Enemies.Add(new BasicEnemy(bounds, new Vector2(random.Next(700) + 50, 1)));
+                        break;
+                }
+                
                 buildUp -= enemySpawnChance;
             }
+        }
+
+        void CreateBezierEnemy()
+        {
+            var controlPoints = new Vector2[] { new Vector2(0, 0), new Vector2(0, bounds.Bottom), new Vector2(bounds.Right, 0), new Vector2(bounds.Right, bounds.Bottom) };
+            Enemies.Add(new BezierCurveEnemy(bounds, controlPoints, 5000));
+        }
+
+        void CreateBezierEnemyEX()
+        {
+            var controlPoints = new Vector2[] { new Vector2(bounds.Right, 0), new Vector2(bounds.Right / 2f, bounds.Bottom), new Vector2(bounds.Right / 2f, bounds.Bottom), new Vector2(0, 0) };
+            Enemies.Add(new BezierCurveEnemy(bounds, controlPoints, 5000));
         }
     }
 }

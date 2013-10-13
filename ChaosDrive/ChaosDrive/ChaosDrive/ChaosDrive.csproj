@@ -77,7 +77,9 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\PointExtension.cs" />
     <Compile Include="Extensions\SpriteExtension.cs" />
+    <Compile Include="Extensions\Vector2Extension.cs" />
     <Compile Include="Game Objects\Background\BackgroundController.cs" />
     <Compile Include="Game Objects\Bullets\Bullet.cs" />
     <Compile Include="Game Objects\Bullets\BulletController.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Game Objects\Effects\Particle.cs" />
     <Compile Include="Game Objects\Effects\ParticleController.cs" />
     <Compile Include="Game Objects\Enemies\BasicEnemy.cs" />
+    <Compile Include="Game Objects\Enemies\BezierCurveEnemy.cs" />
     <Compile Include="Game Objects\Enemies\EnemyController.cs" />
     <Compile Include="Game Objects\Enemies\TestEnemyController.cs" />
     <Compile Include="Game Objects\ICollidable.cs" />

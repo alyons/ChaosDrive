@@ -21,6 +21,7 @@ using SpriteLibrary;
 using ChaosDrive.Game_Objects.Bullets;
 using ChaosDrive.Game_Objects.Enemies;
 using ChaosDrive.Game_Objects.Effects;
+using ChaosDrive.Extensions;
 #endregion
 
 namespace ChaosDrive
@@ -56,6 +57,8 @@ namespace ChaosDrive
 
         InputAction pauseAction;
 
+        Rectangle bounds = new Rectangle(0, 0, 1280, 720);
+
         #endregion
 
         #region Initialization
@@ -73,6 +76,8 @@ namespace ChaosDrive
                 new Buttons[] { Buttons.Start, Buttons.Back },
                 new Keys[] { Keys.Escape },
                 true);
+
+
         }
 
 
@@ -97,16 +102,17 @@ namespace ChaosDrive
 
                 if (particleController == null) particleController = new ParticleController();
                 if (bulletController == null) bulletController = new BulletController();
-                if (enemyController == null) enemyController = new TestEnemyController(new Rectangle(0, 0, 800, 480), bulletController, particleController);
+                if (enemyController == null) enemyController = new TestEnemyController(bounds, bulletController, particleController);
                 
                 if (player == null)
                 {
                     var playerSprites = content.Load<List<Sprite>>(@"Sprites\Player\PlayerSprites");
-                    player = new Player(new Vector2(400, 360), new Rectangle(0, 0, 800, 480), playerSprites);
+                    player = new Player(bounds.Center.ToVector2(), bounds, playerSprites);
                 }
 
                 PlayerBullet.baseSprite = content.Load<Sprite>(@"Sprites\Bullets\PlayerBullet");
                 BasicEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
+                BezierCurveEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
                 Particle.baseTexture = content.Load<Texture2D>(@"Images\Effects\fire_particle");
 
                 affectedGameTime = 0.0f;
@@ -189,11 +195,6 @@ namespace ChaosDrive
                 var timeSpan = new TimeSpan(0, 0, 0, 0, (int)elapsedTime);
                 myGameTime = new GameTime(myGameTime.TotalGameTime, timeSpan);
                 affectedGameTime += elapsedTime;
-
-                #region Collision
-                //enemyController.CollideWithBullets(bulletController.Bullets);
-                //bulletController.CollideWithEnemies(enemyController.Enemies);
-                #endregion
 
                 #region Update Objects
                 #region Update Player

@@ -69,7 +69,7 @@ namespace ChaosDrive.Game_Objects.Enemies
             ActiveSprite.Update(elapsedTime);
             ActiveSprite.Position = position;
 
-            if (health < 0 || !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
+            if (health <= 0 || !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {

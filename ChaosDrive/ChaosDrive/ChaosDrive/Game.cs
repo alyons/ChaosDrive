@@ -34,8 +34,8 @@ namespace ChaosDrive
             Content.RootDirectory = "Content";
 
             graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferHeight = 640;
-            //graphics.PreferredBackBufferWidth = 480;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
             TargetElapsedTime = TimeSpan.FromTicks(333333);
 
 #if WINDOWS_PHONE
