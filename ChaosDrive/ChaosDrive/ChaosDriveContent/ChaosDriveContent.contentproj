@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\Background\" />
+    <Folder Include="Sprite Effects\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\Player\PlayerSprites.xml">
@@ -142,6 +143,13 @@
       <Name>BasicEnemyRects</Name>
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Images\Effects\fire_particle.png">
+      <Name>fire_particle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

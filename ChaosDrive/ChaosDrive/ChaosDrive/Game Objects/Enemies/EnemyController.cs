@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ChaosDrive.Game_Objects.Bullets;
+using ChaosDrive.Game_Objects.Effects;
+using ChaosDrive.Extensions;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -12,6 +15,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         #region Variables
         List<Enemy> enemies;
         protected Rectangle bounds;
+        protected Random random;
         #endregion
 
         #region Properties
@@ -19,12 +23,25 @@ namespace ChaosDrive.Game_Objects.Enemies
         {
             get { return enemies; }
         }
+        BulletController BulletController
+        {
+            get;
+            set;
+        }
+        ParticleController ParticleController
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Constructors
-        public EnemyController(Rectangle bounds)
+        public EnemyController(Rectangle bounds, BulletController bulletController, ParticleController particleController)
         {
             enemies = new List<Enemy>();
+            random = new Random();
+            BulletController = bulletController;
+            ParticleController = particleController;
             this.bounds = bounds;
         }
         #endregion
@@ -32,18 +49,50 @@ namespace ChaosDrive.Game_Objects.Enemies
         #region Methods
         public virtual void Update(float elapsedTime)
         {
+            foreach(Enemy enemy in enemies.FindAll(e => e.ShouldRemove))
+            {
+                if (enemy.Health <= 0)
+                {
+                    //Dictionary<Color, int> pieces = enemy.ActiveSprite.GetPixelDictionary();
+                    //int highNumber = 0;
+                    //foreach (Color key in pieces.Keys)
+                        //highNumber += pieces[key];
+
+                    var center = enemy.ActiveSprite.Position;
+
+                    for (int i = 0; i < 30; i++)
+                    {
+                        double rot = random.NextDouble() * Math.PI * 2.0;
+                        var partVel = new Vector2((float)(Math.Cos(rot) * 6.0), (float)(Math.Sin(rot) * 4.0 - 2.0));
+                        ParticleController.Particles.Add(new Particle(center, partVel, Color.Red));
+                    }
+                }
+            }
+
+            enemies.RemoveAll(e => e.ShouldRemove);
+
             foreach (Enemy enemy in enemies)
             {
                 enemy.Update(elapsedTime);
             }
 
-            enemies.RemoveAll(e => e.ShouldRemove);
+            CollideWithBullets();
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (Enemy enemy in enemies)
             {
                 enemy.Draw(spriteBatch);
+            }
+        }
+        public virtual void CollideWithBullets()
+        {
+            foreach (Bullet bullet in BulletController.Bullets)
+            {
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Collide(bullet);
+                }
             }
         }
         #endregion

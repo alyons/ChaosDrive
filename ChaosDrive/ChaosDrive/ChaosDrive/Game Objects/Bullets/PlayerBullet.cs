@@ -27,11 +27,13 @@ namespace ChaosDrive.Game_Objects.Bullets
 
         public override bool Collide(ICollidable other)
         {
-            if (other is Enemy)
+            if (ActiveSprite.Collide(other.ActiveSprite))
             {
-                (other as Enemy).TakeDamage(damage);
-                shouldRemove = true;
-                return true;
+                if (other is Enemy)
+                {
+                    shouldRemove = true;
+                    return true;
+                }
             }
 
             return false;
@@ -39,9 +41,12 @@ namespace ChaosDrive.Game_Objects.Bullets
 
         public override void Update(float elapsedTime)
         {
-            position.Y -= 500.0f * elapsedTime / 1000.0f;
-            ActiveSprite.Position = position;
-            shouldRemove = !ActiveSprite.Bounds.Intersects(bounds);
+            if (!shouldRemove)
+            {
+                position.Y -= 500.0f * elapsedTime / 1000.0f;
+                ActiveSprite.Position = position;
+                shouldRemove = !ActiveSprite.Bounds.Intersects(bounds); 
+            }
         }
     }
 }

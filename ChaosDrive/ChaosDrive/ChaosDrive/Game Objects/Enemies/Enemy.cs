@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using SpriteLibrary;
 using Microsoft.Xna.Framework.Graphics;
+using ChaosDrive.Game_Objects.Bullets;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -36,7 +37,29 @@ namespace ChaosDrive.Game_Objects.Enemies
             this.health = health;
         }
 
-        public abstract bool Collide(ICollidable other);
+        public virtual bool Collide(ICollidable other)
+        {
+            if (ActiveSprite.Collide(other.ActiveSprite))
+            {
+                if (other is Player.Player)
+                {
+                    return true;
+                }
+
+                if (other is Bullet)
+                {
+                    if ((other as Bullet).IsPlayerBullet)
+                    {
+                        health -= (other as Bullet).Damage;
+                        shouldRemove = health <= 0;
+                        (other as Bullet).ShouldRemove = true;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
         public virtual void TakeDamage(float damage)
         {
             health -= damage;

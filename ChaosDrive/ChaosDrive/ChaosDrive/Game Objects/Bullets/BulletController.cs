@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using ChaosDrive.Game_Objects.Enemies;
 
 namespace ChaosDrive.Game_Objects.Bullets
 {
@@ -13,6 +14,10 @@ namespace ChaosDrive.Game_Objects.Bullets
         #endregion
 
         #region Properties
+        public List<Bullet> Bullets
+        {
+            get { return bullets; }
+        }
         #endregion
 
         #region Constructors
@@ -30,7 +35,12 @@ namespace ChaosDrive.Game_Objects.Bullets
                 bullet.Update(elapsedTime);
             }
 
-            bullets.RemoveAll(b => b.ShouldRemove);
+            bullets.RemoveAll(b => b.ShouldRemove == true);
+
+            if (bullets.Exists(b => b.ShouldRemove == true))
+            {
+                Console.WriteLine("There are bad bullets in here!");
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -42,6 +52,14 @@ namespace ChaosDrive.Game_Objects.Bullets
         public void AddBullets(IEnumerable<Bullet> newBullets)
         {
             bullets.AddRange(newBullets);
+        }
+        public void CollideWithEnemies(IEnumerable<Enemy> enemies)
+        {
+            foreach (Bullet bullet in bullets)
+                foreach (Enemy enemy in enemies)
+                    if (bullet is PlayerBullet)
+                        if (bullet.Collide(enemy))
+                            bullet.ShouldRemove = true;
         }
         #endregion
     }

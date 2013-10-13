@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace ChaosDrive.Extensions
 {
-    public class SpriteExtension
+    public static class SpriteExtension
     {
         public static Dictionary<Color, int> GetPixelDictionary(this Sprite sprite)
         {

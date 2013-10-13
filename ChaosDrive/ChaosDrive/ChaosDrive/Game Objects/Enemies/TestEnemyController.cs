@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using ChaosDrive.Game_Objects.Bullets;
+using ChaosDrive.Game_Objects.Effects;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -10,12 +12,10 @@ namespace ChaosDrive.Game_Objects.Enemies
     {
         const int enemySpawnChance = 5000;
         int buildUp = 0;
-        Random random;
 
-        public TestEnemyController(Rectangle bounds)
-            : base(bounds)
+        public TestEnemyController(Rectangle bounds, BulletController bulletController, ParticleController particleController)
+            : base(bounds, bulletController, particleController)
         {
-            random = new Random();
         }
 
         public override void Update(float elapsedTime)
@@ -27,7 +27,6 @@ namespace ChaosDrive.Game_Objects.Enemies
             {
                 Enemies.Add(new BasicEnemy(bounds, new Vector2(random.Next(700) + 50, 1)));
                 buildUp -= enemySpawnChance;
-                Console.WriteLine("Ding!");
             }
         }
     }

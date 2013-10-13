@@ -18,6 +18,7 @@ namespace ChaosDrive.Game_Objects.Effects
         bool shouldRemove;
         float age;
         Color color;
+        Color agedColor;
         #endregion
 
         #region Properties
@@ -30,7 +31,8 @@ namespace ChaosDrive.Game_Objects.Effects
         {
             get
             {
-                return new Color(color.R * (age / 255.0f), color.G * (age / 255.0f), color.B * (age / 255.0f), age);
+                //return new Color(color.R * (age / 255.0f), color.G * (age / 255.0f), color.B * (age / 255.0f), age);
+                return new Color(age, age, age, age);
             }
         }
         Effect Effect
@@ -57,6 +59,7 @@ namespace ChaosDrive.Game_Objects.Effects
             rotation = 0;
             scale = new Vector2(0.1f, 0.1f);
             shouldRemove = false;
+            color = new Color(age, age, age, age);
         }
         #endregion
 
@@ -65,11 +68,14 @@ namespace ChaosDrive.Game_Objects.Effects
         {
             //Age the particle
             age -= (255.0f / 3.0f) * (elapsedTime / 1000.0f);
+            color.A = (byte)(age);
+            color.G = (byte)(age);
+            color.B = (byte)(age / 2);
 
             //Move the Particle
             rotation = Math.Atan2(velocity.Y, velocity.X);
             scale.X = Math.Abs(0.1f * velocity.Length());
-            position += velocity * (elapsedTime / 1000.0f);
+            position += velocity * (elapsedTime / 50);
 
             //Test to see if the particle is alive
             if (age <= 0)
@@ -81,7 +87,7 @@ namespace ChaosDrive.Game_Objects.Effects
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(0, null, null, null, null, Effect);
-            spriteBatch.Draw(texture, position, null, AgedColor, (float)rotation, midpoint, scale, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, position, null, color, (float)rotation, midpoint, scale, SpriteEffects.None, 1.0f);
             spriteBatch.End();
         }
         #endregion

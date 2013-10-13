@@ -20,6 +20,7 @@ using ChaosDrive.Game_Objects.Player;
 using SpriteLibrary;
 using ChaosDrive.Game_Objects.Bullets;
 using ChaosDrive.Game_Objects.Enemies;
+using ChaosDrive.Game_Objects.Effects;
 #endregion
 
 namespace ChaosDrive
@@ -49,6 +50,7 @@ namespace ChaosDrive
         Player player;
         BulletController bulletController;
         EnemyController enemyController;
+        ParticleController particleController;
 
         float pauseAlpha;
 
@@ -93,8 +95,9 @@ namespace ChaosDrive
                 gameFont = content.Load<SpriteFont>("TitleFont");
                 hudFont = content.Load<SpriteFont>(@"Fonts\hudFont");
 
+                if (particleController == null) particleController = new ParticleController();
                 if (bulletController == null) bulletController = new BulletController();
-                if (enemyController == null) enemyController = new TestEnemyController(new Rectangle(0, 0, 800, 480));
+                if (enemyController == null) enemyController = new TestEnemyController(new Rectangle(0, 0, 800, 480), bulletController, particleController);
                 
                 if (player == null)
                 {
@@ -104,6 +107,7 @@ namespace ChaosDrive
 
                 PlayerBullet.baseSprite = content.Load<Sprite>(@"Sprites\Bullets\PlayerBullet");
                 BasicEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
+                Particle.baseTexture = content.Load<Texture2D>(@"Images\Effects\fire_particle");
 
                 affectedGameTime = 0.0f;
                 // A real game would probably have more content than this sample, so
@@ -182,11 +186,16 @@ namespace ChaosDrive
                 }
 
                 var elapsedTime = gameTime.ElapsedGameTime.Milliseconds * timeWarpFactor;
-                //Console.WriteLine("Elapsed Time: " + elapsedTime + " : " + gameTime.ElapsedGameTime.Milliseconds);
                 var timeSpan = new TimeSpan(0, 0, 0, 0, (int)elapsedTime);
                 myGameTime = new GameTime(myGameTime.TotalGameTime, timeSpan);
                 affectedGameTime += elapsedTime;
 
+                #region Collision
+                //enemyController.CollideWithBullets(bulletController.Bullets);
+                //bulletController.CollideWithEnemies(enemyController.Enemies);
+                #endregion
+
+                #region Update Objects
                 #region Update Player
                 if (player != null) player.Update(elapsedTime);
                 if (!timeFactors.ContainsKey(player.UniqueName))
@@ -198,12 +207,17 @@ namespace ChaosDrive
                 player.BulletsFired.Clear();
                 #endregion
 
+                #region Update Bullets
+                bulletController.Update(elapsedTime);
+                #endregion
+
                 #region Update Enemies
                 enemyController.Update(elapsedTime);
                 #endregion
 
-                #region Update Bullets
-                bulletController.Update(elapsedTime);
+                #region Update Particles
+                particleController.Update(elapsedTime);
+                #endregion
                 #endregion
             }
         }
@@ -263,6 +277,7 @@ namespace ChaosDrive
             player.Draw(spriteBatch);
             enemyController.Draw(spriteBatch);
             bulletController.Draw(spriteBatch);
+            particleController.Draw(spriteBatch);
 
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)
@@ -312,6 +327,7 @@ namespace ChaosDrive
             spriteBatch.DrawString(hudFont, timeString, timePos, timeColor);
             spriteBatch.DrawString(hudFont, healthString, healthPos, healthColor);
             spriteBatch.DrawString(hudFont, chaosString, chaosPos, chaosColor);
+            spriteBatch.DrawString(hudFont, "Bullets: " + bulletController.Bullets.Count, new Vector2(8, chaosPos.Y + hudFont.MeasureString(chaosString).Y + 4), Color.Yellow);
 
             spriteBatch.End();
         }

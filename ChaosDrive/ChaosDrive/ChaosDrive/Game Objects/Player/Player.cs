@@ -219,7 +219,7 @@ namespace ChaosDrive.Game_Objects.Player
             if (gunReloadTime <= 0 && fireActions.Evaluate(input, controllingPlayer, out player))
             {
                 bulletsFired.Add(new PlayerBullet(position, bounds));
-                gunReloadTime += 1000.0f;
+                gunReloadTime += 333.0f;
             }
             #endregion
 

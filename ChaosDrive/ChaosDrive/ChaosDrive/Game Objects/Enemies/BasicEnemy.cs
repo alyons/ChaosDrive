@@ -26,22 +26,9 @@ namespace ChaosDrive.Game_Objects.Enemies
         }
         public override void Update(float elapsedTime)
         {
-            position.Y += 300 * elapsedTime / 1000.0f;
+            position.Y += 150 * elapsedTime / 1000.0f;
 
             base.Update(elapsedTime);
-        }
-        public override bool Collide(ICollidable other)
-        {
-            if (other is Player.Player)
-            {
-                return true;
-            }
-
-            if (other is Bullet)
-                if ((other as Bullet).IsPlayerBullet)
-                    return true;
-
-            return false;
         }
     }
 }
