@@ -38,6 +38,7 @@ namespace ChaosDrive.Game_Objects.Player
         Rectangle bounds;
         float gunReloadTime;
         float driveReloadTime;
+        float invulnerableTime;
         float chaosDriveFuel;
         bool invulnerable;
         int activeSprite;
@@ -139,11 +140,17 @@ namespace ChaosDrive.Game_Objects.Player
 
             if (incomingDamage > 0)
             {
-                var toRemove = 25.0f / (elapsedTime * 1000.0f);
+                var toRemove = 25.0f / (elapsedTime);
                 toRemove = Math.Min(incomingDamage, toRemove);
 
                 health -= toRemove;
                 incomingDamage -= toRemove;
+            }
+
+            if (invulnerableTime > 0)
+            {
+                invulnerableTime = Math.Max(0f, invulnerableTime - elapsedTime);
+                invulnerable = invulnerableTime > 0;
             }
 
             if (gunReloadTime > 0) gunReloadTime -= elapsedTime;
@@ -290,22 +297,38 @@ namespace ChaosDrive.Game_Objects.Player
                 {
                     if (!(other as Bullet).IsPlayerBullet)
                     {
-                        incomingDamage += (other as Bullet).Damage;
-                        (other as Bullet).ShouldRemove = true;
-                        invulnerable = true;
-                        return true;
+                        if (ActiveSprite.Collide(other.ActiveSprite))
+                        {
+                            incomingDamage += (other as Bullet).Damage;
+                            (other as Bullet).ShouldRemove = true;
+                            invulnerable = true;
+                            invulnerableTime = 1000;
+                            return true;
+                        }
                     }
                 }
                 if (other is Enemy)
                 {
-                    incomingDamage += (other as Enemy).Health / 10.0f;
-                    (other as Enemy).ShouldRemove = true;
-                    invulnerable = true;
-                    return true;
+                    if (ActiveSprite.Collide(other.ActiveSprite))
+                    {
+                        incomingDamage += (other as Enemy).Health / 10.0f;
+                        (other as Enemy).TakeDamage((other as Enemy).Health);
+                        (other as Enemy).ShouldRemove = true;
+                        invulnerable = true;
+                        invulnerableTime = 1000;
+                        return true;
+                    }
                 }
             }
 
             return false;
+        }
+        public void Collide(IEnumerable<ICollidable> others)
+        {
+            foreach (ICollidable other in others)
+            {
+                if (Collide(other)) break;
+            }
         }
         void Move(float elapsedTime)
         {

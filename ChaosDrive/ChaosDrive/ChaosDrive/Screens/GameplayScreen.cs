@@ -22,6 +22,7 @@ using ChaosDrive.Game_Objects.Bullets;
 using ChaosDrive.Game_Objects.Enemies;
 using ChaosDrive.Game_Objects.Effects;
 using ChaosDrive.Extensions;
+using ChaosDrive.Game_Objects.Background;
 #endregion
 
 namespace ChaosDrive
@@ -52,6 +53,7 @@ namespace ChaosDrive
         BulletController bulletController;
         EnemyController enemyController;
         ParticleController particleController;
+        BackgroundController backgroundController;
 
         float pauseAlpha;
 
@@ -76,8 +78,6 @@ namespace ChaosDrive
                 new Buttons[] { Buttons.Start, Buttons.Back },
                 new Keys[] { Keys.Escape },
                 true);
-
-
         }
 
 
@@ -103,6 +103,7 @@ namespace ChaosDrive
                 if (particleController == null) particleController = new ParticleController();
                 if (bulletController == null) bulletController = new BulletController();
                 if (enemyController == null) enemyController = new TestEnemyController(bounds, bulletController, particleController);
+                if (backgroundController == null) backgroundController = new TestBackgroundController(bounds);
                 
                 if (player == null)
                 {
@@ -110,10 +111,13 @@ namespace ChaosDrive
                     player = new Player(bounds.Center.ToVector2(), bounds, playerSprites);
                 }
 
+                Enemy.hitEffect = content.Load<Effect>(@"Sprite Effects\HitEffect");
                 PlayerBullet.baseSprite = content.Load<Sprite>(@"Sprites\Bullets\PlayerBullet");
                 BasicEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
                 BezierCurveEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
                 Particle.baseTexture = content.Load<Texture2D>(@"Images\Effects\fire_particle");
+                SimpleBoss.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\SimpleBoss");
+                Star.texture = content.Load<Texture2D>(@"Images\Background\Star");
 
                 affectedGameTime = 0.0f;
                 // A real game would probably have more content than this sample, so
@@ -206,6 +210,8 @@ namespace ChaosDrive
 
                 bulletController.AddBullets(player.BulletsFired);
                 player.BulletsFired.Clear();
+                player.Collide(enemyController.Enemies);
+                player.Collide(bulletController.Bullets);
                 #endregion
 
                 #region Update Bullets
@@ -218,6 +224,10 @@ namespace ChaosDrive
 
                 #region Update Particles
                 particleController.Update(elapsedTime);
+                #endregion
+
+                #region Update Background
+                backgroundController.Update(elapsedTime);
                 #endregion
                 #endregion
             }
@@ -274,11 +284,12 @@ namespace ChaosDrive
             // Our player and enemy are both actually just text strings.
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
-            DrawHUD(spriteBatch);
-            player.Draw(spriteBatch);
-            enemyController.Draw(spriteBatch);
-            bulletController.Draw(spriteBatch);
+            backgroundController.Draw(spriteBatch);
             particleController.Draw(spriteBatch);
+            bulletController.Draw(spriteBatch);
+            enemyController.Draw(spriteBatch);
+            player.Draw(spriteBatch);
+            DrawHUD(spriteBatch);
 
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)

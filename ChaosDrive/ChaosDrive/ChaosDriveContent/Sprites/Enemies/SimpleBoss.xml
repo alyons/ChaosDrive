@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent>
+  <Asset Type="SpriteLibrary.Sprite">
+    <Name>SimpleBoss</Name>
+    <FPS>0</FPS>
+    <TextureAsset>Images\Enemies\Bomber39</TextureAsset>
+    <RectangleAsset>Sprites\Enemies\SimpleBossRects</RectangleAsset>
+  </Asset>
+</XnaContent>

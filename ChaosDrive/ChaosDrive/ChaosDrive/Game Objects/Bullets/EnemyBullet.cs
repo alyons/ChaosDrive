@@ -2,32 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 using SpriteLibrary;
-using ChaosDrive.Game_Objects.Enemies;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using ChaosDrive.Extensions;
+using ChaosDrive.Game_Objects.Player;
 
 namespace ChaosDrive.Game_Objects.Bullets
 {
-    public class PlayerBullet : Bullet
+    public class EnemyBullet : Bullet
     {
         public static Sprite baseSprite;
         Sprite bulletSprite;
+        Vector2 velocity;
 
         public override Sprite ActiveSprite
         {
             get { return bulletSprite; }
         }
 
-        public PlayerBullet(Vector2 pos, Rectangle bounds)
-            : base(pos, 50.0f, true, bounds)
+        public EnemyBullet(Vector2 pos, Vector2 playerPos, Rectangle bounds)
+            : base(pos, 20.0f, false, bounds)
         {
             bulletSprite = baseSprite.Copy();
+            velocity = (pos - playerPos);
+            velocity.Normalize();
+            velocity = velocity.Multiply(200);
         }
 
         public override bool Collide(ICollidable other)
         {
-            if (other is Enemy)
+            if (other is Player.Player)
             {
                 if (ActiveSprite.Collide(other.ActiveSprite))
                 {
@@ -43,9 +47,9 @@ namespace ChaosDrive.Game_Objects.Bullets
         {
             if (!shouldRemove)
             {
-                position.Y -= 500.0f * elapsedTime / 1000.0f;
+                position += velocity.Multiply(elapsedTime / 1000f);
                 ActiveSprite.Position = position;
-                shouldRemove = !ActiveSprite.Bounds.Intersects(bounds); 
+                shouldRemove = !ActiveSprite.Bounds.Intersects(bounds);
             }
         }
     }

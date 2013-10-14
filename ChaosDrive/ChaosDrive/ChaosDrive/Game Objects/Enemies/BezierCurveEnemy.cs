@@ -5,6 +5,7 @@ using System.Text;
 using SpriteLibrary;
 using Microsoft.Xna.Framework;
 using ChaosDrive.Extensions;
+using ChaosDrive.Utility;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -37,15 +38,11 @@ namespace ChaosDrive.Game_Objects.Enemies
             currentTime += elapsedTime;
 
             float t = currentTime / runTime;
-            float T = 1.0f - t;
 
             if (t <= 1.0f)
             {
                 //Do Bezier logic here
-                var nextPos = controlPoints[0].Multiply(Math.Pow(T, 3))
-                                + controlPoints[1].Multiply(3 * Math.Pow(T, 2) * t)
-                                + controlPoints[2].Multiply(3 * T * Math.Pow(t, 2))
-                                + controlPoints[3].Multiply(Math.Pow(t, 3));
+                var nextPos = ChaosDriveMath.CalculateBezierCurveLocation(controlPoints, t);
 
                 velocity = nextPos - position;
                 position = nextPos;
@@ -54,6 +51,8 @@ namespace ChaosDrive.Game_Objects.Enemies
             {
                 position += velocity;
             }
+
+            UpdateHitEffect(elapsedTime);
 
             ActiveSprite.Update(elapsedTime);
             ActiveSprite.Position = position;

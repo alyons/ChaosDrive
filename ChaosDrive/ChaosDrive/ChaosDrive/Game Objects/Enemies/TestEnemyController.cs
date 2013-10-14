@@ -12,6 +12,8 @@ namespace ChaosDrive.Game_Objects.Enemies
     {
         const int enemySpawnChance = 5000;
         int buildUp = 0;
+        int bossBuildUp = 0;
+        bool bossSpawned = false;
 
         public TestEnemyController(Rectangle bounds, BulletController bulletController, ParticleController particleController)
             : base(bounds, bulletController, particleController)
@@ -22,23 +24,34 @@ namespace ChaosDrive.Game_Objects.Enemies
         {
             base.Update(elapsedTime);
 
-            buildUp += (int)elapsedTime;
-            if (random.Next(buildUp) > enemySpawnChance)
+            if (!bossSpawned)
             {
-                switch (random.Next(3))
+                buildUp += (int)elapsedTime;
+                bossBuildUp += (int)elapsedTime;
+                if (bossBuildUp > 30000)
                 {
-                    case 0:
-                        CreateBezierEnemy();
-                        break;
-                    case 1:
-                        CreateBezierEnemyEX();
-                        break;
-                    default:
-                        Enemies.Add(new BasicEnemy(bounds, new Vector2(random.Next(700) + 50, 1)));
-                        break;
+                    Enemies.Add(new SimpleBoss(bounds));
+                    bossSpawned = true;
+                    return;
                 }
-                
-                buildUp -= enemySpawnChance;
+
+                if (random.Next(buildUp) > enemySpawnChance)
+                {
+                    switch (random.Next(3))
+                    {
+                        case 0:
+                            CreateBezierEnemy();
+                            break;
+                        case 1:
+                            CreateBezierEnemyEX();
+                            break;
+                        default:
+                            Enemies.Add(new BasicEnemy(bounds, new Vector2(random.Next(700) + 50, 1)));
+                            break;
+                    }
+
+                    buildUp -= enemySpawnChance;
+                } 
             }
         }
 

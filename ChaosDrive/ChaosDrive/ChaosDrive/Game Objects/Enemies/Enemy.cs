@@ -11,6 +11,8 @@ namespace ChaosDrive.Game_Objects.Enemies
 {
     public abstract class Enemy : ICollidable
     {
+        public static Effect hitEffect;
+        protected float hitPercent;
         protected float health;
         protected Vector2 position;
         protected bool shouldRemove;
@@ -52,6 +54,7 @@ namespace ChaosDrive.Game_Objects.Enemies
                     {
                         health -= (other as Bullet).Damage;
                         shouldRemove = health <= 0;
+                        hitPercent = 1.0f;
                         (other as Bullet).ShouldRemove = true;
                         return true;
                     }
@@ -66,10 +69,27 @@ namespace ChaosDrive.Game_Objects.Enemies
         }
         public virtual void Update(float elapsedTime)
         {
+            UpdateHitEffect(elapsedTime);
             ActiveSprite.Update(elapsedTime);
             ActiveSprite.Position = position;
 
             if (health <= 0 || !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
+        }
+        public virtual void UpdateHitEffect(float elapsedTime)
+        {
+            if (hitPercent > 0.0f)
+            {
+                hitPercent = Math.Max(0.0f, hitPercent - (elapsedTime / 1000.0f));
+                if (hitEffect != null) hitEffect.Parameters["Percentage"].SetValue(hitPercent);
+                if (hitPercent > 0.0f)
+                {
+                    ActiveSprite.Effect = hitEffect;
+                }
+                else
+                {
+                    ActiveSprite.Effect = null;
+                }
+            }
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {

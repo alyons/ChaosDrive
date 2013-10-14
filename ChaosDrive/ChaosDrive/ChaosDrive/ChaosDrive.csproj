@@ -81,14 +81,18 @@
     <Compile Include="Extensions\SpriteExtension.cs" />
     <Compile Include="Extensions\Vector2Extension.cs" />
     <Compile Include="Game Objects\Background\BackgroundController.cs" />
+    <Compile Include="Game Objects\Background\BackgroundObject.cs" />
+    <Compile Include="Game Objects\Background\TestBackgroundController.cs" />
     <Compile Include="Game Objects\Bullets\Bullet.cs" />
     <Compile Include="Game Objects\Bullets\BulletController.cs" />
+    <Compile Include="Game Objects\Bullets\EnemyBullet.cs" />
     <Compile Include="Game Objects\Bullets\PlayerBullet.cs" />
     <Compile Include="Game Objects\Effects\Particle.cs" />
     <Compile Include="Game Objects\Effects\ParticleController.cs" />
     <Compile Include="Game Objects\Enemies\BasicEnemy.cs" />
     <Compile Include="Game Objects\Enemies\BezierCurveEnemy.cs" />
     <Compile Include="Game Objects\Enemies\EnemyController.cs" />
+    <Compile Include="Game Objects\Enemies\SimpleBoss.cs" />
     <Compile Include="Game Objects\Enemies\TestEnemyController.cs" />
     <Compile Include="Game Objects\ICollidable.cs" />
     <Compile Include="Game Objects\Enemies\Enemy.cs" />
@@ -113,6 +117,7 @@
     <Compile Include="Screens\PhoneMenuScreen.cs" />
     <Compile Include="Screens\PhonePauseScreen.cs" />
     <Compile Include="Screens\PlayerIndexEventArgs.cs" />
+    <Compile Include="Utility\ChaosDriveMath.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
