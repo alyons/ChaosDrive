@@ -30,6 +30,10 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ChaosDriveXMLContentExtension\ChaosDriveXMLContentExtension.csproj">
+      <Project>{8BA3FDEB-23E9-4E89-8D93-D73FAA1FF7B7}</Project>
+      <Name>ChaosDriveXMLContentExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpriteLibraryContentExtension\SpriteLibraryContentExtension.csproj">
       <Project>{18156A84-702A-4352-848D-2808CA5860E0}</Project>
       <Name>SpriteLibraryContentExtension</Name>
@@ -71,7 +75,18 @@
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Images\Player\HUDBars.png">
+      <Name>HUDBars</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Images\Player\statusBar.png">
+      <Name>statusBar</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\Player\PlayerSprites.xml">
       <Name>PlayerSprites</Name>
@@ -189,6 +204,13 @@
       <Name>Star</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XML\EnemyList\EnemiesLevel01.xml">
+      <Name>EnemiesLevel01</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

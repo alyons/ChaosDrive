@@ -96,6 +96,12 @@ namespace ChaosDrive.Game_Objects.Enemies
         {
             base.Draw(spriteBatch);
         }
+        public override void DisposeObjects()
+        {
+            sprite.Dispose();
+
+            base.DisposeObjects();
+        }
         #endregion
     }
 }

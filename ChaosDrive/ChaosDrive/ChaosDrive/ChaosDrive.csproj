@@ -71,6 +71,7 @@
     <Reference Include="Microsoft.Xna.Framework.Input.Touch, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,11 +93,15 @@
     <Compile Include="Game Objects\Enemies\BasicEnemy.cs" />
     <Compile Include="Game Objects\Enemies\BezierCurveEnemy.cs" />
     <Compile Include="Game Objects\Enemies\EnemyController.cs" />
+    <Compile Include="Game Objects\Enemies\EnemyFactory.cs" />
+    <Compile Include="Game Objects\Enemies\EnemyShootingEventArgs.cs" />
+    <Compile Include="Game Objects\Enemies\QueuedEnemyController.cs" />
     <Compile Include="Game Objects\Enemies\SimpleBoss.cs" />
+    <Compile Include="Game Objects\Enemies\StandardEnemy.cs" />
     <Compile Include="Game Objects\Enemies\TestEnemyController.cs" />
     <Compile Include="Game Objects\ICollidable.cs" />
     <Compile Include="Game Objects\Enemies\Enemy.cs" />
-    <Compile Include="Game Objects\Player\Player.cs" />
+    <Compile Include="Game Objects\Player\PlayerObject.cs" />
     <Compile Include="Game Objects\ITimeAdjuster.cs" />
     <Compile Include="Game Objects\Player\PlayerController.cs" />
     <Compile Include="Game.cs" />
@@ -105,6 +110,7 @@
     <Compile Include="ScreenFactory.cs" />
     <Compile Include="Screens\BackgroundScreen.cs" />
     <Compile Include="Screens\Button.cs" />
+    <Compile Include="Screens\GameEndScreen.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Screens\PhonePauseScreen.cs" />
     <Compile Include="Screens\PlayerIndexEventArgs.cs" />
     <Compile Include="Utility\ChaosDriveMath.cs" />
+    <Compile Include="Utility\TypeSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -126,6 +133,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ChaosDriveContentLibrary\ChaosDriveContentLibrary.csproj">
+      <Project>{0E1CD3E1-36B3-4549-8071-53DB92213F20}</Project>
+      <Name>ChaosDriveContentLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ChaosDriveXMLContentExtension\ChaosDriveXMLContentExtension.csproj">
+      <Project>{8BA3FDEB-23E9-4E89-8D93-D73FAA1FF7B7}</Project>
+      <Name>ChaosDriveXMLContentExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChaosDriveContent\ChaosDriveContent.contentproj">
       <Name>ChaosDriveContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

@@ -180,7 +180,14 @@ namespace ChaosDrive
         /// </summary>
         public virtual int GetHeight(MenuScreen screen)
         {
-            return font.LineSpacing;
+            try
+            {
+                return font.LineSpacing;
+            }
+            catch (Exception)
+            {
+                return screen.ScreenManager.Font.LineSpacing;
+            }
         }
 
 
@@ -189,7 +196,14 @@ namespace ChaosDrive
         /// </summary>
         public virtual int GetWidth(MenuScreen screen)
         {
-            return (int)font.MeasureString(Text).X;
+            try
+            {
+                return (int)font.MeasureString(Text).X;
+            }
+            catch (Exception)
+            {
+                return (int)screen.ScreenManager.Font.MeasureString(Text).X;
+            }
         }
 
 

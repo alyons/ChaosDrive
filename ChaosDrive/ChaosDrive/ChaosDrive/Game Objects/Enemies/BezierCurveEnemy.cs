@@ -60,5 +60,11 @@ namespace ChaosDrive.Game_Objects.Enemies
             if (health <= 0) shouldRemove = true;
             if (currentTime >= runTime && !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
         }
+        public override void DisposeObjects()
+        {
+            sprite.Dispose();
+
+            base.DisposeObjects();
+        }
     }
 }

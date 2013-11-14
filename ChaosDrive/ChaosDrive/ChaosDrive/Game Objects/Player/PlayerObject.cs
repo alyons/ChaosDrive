@@ -13,7 +13,7 @@ using ChaosDrive.Game_Objects.Enemies;
 
 namespace ChaosDrive.Game_Objects.Player
 {
-    public class Player : ITimeAdjuster, INotifyPropertyChanged, ICollidable
+    public class PlayerObject : ITimeAdjuster, INotifyPropertyChanged, ICollidable
     {
         #region Enumertaions
         #region State Numbers
@@ -100,6 +100,10 @@ namespace ChaosDrive.Game_Objects.Player
         {
             get { return driveReloadTime > 0; }
         }
+        public Vector2 Position
+        {
+            get { return position; }
+        }
         #endregion
 
         #region Events
@@ -107,7 +111,7 @@ namespace ChaosDrive.Game_Objects.Player
         #endregion
 
         #region Constructors
-        public Player(Vector2 pos, Rectangle bounds, IEnumerable<Sprite> sprites)
+        public PlayerObject(Vector2 pos, Rectangle bounds, IEnumerable<Sprite> sprites)
         {
             position = pos;
             activeSprite = 0;
@@ -127,6 +131,12 @@ namespace ChaosDrive.Game_Objects.Player
             slowTimeActions = new InputAction(new Buttons[] { Buttons.LeftTrigger, Buttons.LeftShoulder }, new Keys[] { Keys.J, Keys.Z }, false);
             accelTimeActions = new InputAction(new Buttons[] { Buttons.RightTrigger, Buttons.RightShoulder }, new Keys[] { Keys.K, Keys.X }, false);
         }
+        public PlayerObject(Vector2 pos, Rectangle bounds, IEnumerable<Sprite> sprites, float invulnerableTime)
+            : this(pos, bounds, sprites)
+        {
+            this.invulnerableTime = invulnerableTime;
+            invulnerable = invulnerableTime > 0;
+        }
         #endregion
 
         #region Methods
@@ -145,6 +155,11 @@ namespace ChaosDrive.Game_Objects.Player
 
                 health -= toRemove;
                 incomingDamage -= toRemove;
+            }
+
+            if (health < 1)
+            {
+                health = 0;
             }
 
             if (invulnerableTime > 0)
@@ -311,7 +326,7 @@ namespace ChaosDrive.Game_Objects.Player
                 {
                     if (ActiveSprite.Collide(other.ActiveSprite))
                     {
-                        incomingDamage += (other as Enemy).Health / 10.0f;
+                        incomingDamage += (other as Enemy).Health / 4.0f;
                         (other as Enemy).TakeDamage((other as Enemy).Health);
                         (other as Enemy).ShouldRemove = true;
                         invulnerable = true;

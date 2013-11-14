@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent>
+  <Asset Type="ChaosDriveContentLibrary.EnemyData[]">
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>5000</appearanceTime>
+      <data>{"X" : 640, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>10000</appearanceTime>
+      <data>{"X" : 420, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>10000</appearanceTime>
+      <data>{"X" : 840, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>15000</appearanceTime>
+      <data>{"X" : 320, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>15000</appearanceTime>
+      <data>{"X" : 640, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>BasicEnemy</enemyType>
+      <appearanceTime>15000</appearanceTime>
+      <data>{"X" : 960, "Y" : 0}</data>
+    </Item>
+    <Item>
+      <enemyType>SimpleBoss</enemyType>
+      <appearanceTime>30000</appearanceTime>
+      <data>{"X" : 640, "Y" : 0}</data>
+    </Item>
+  </Asset>
+</XnaContent>

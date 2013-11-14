@@ -51,8 +51,10 @@ namespace ChaosDrive.Game_Objects.Enemies
                     }
 
                     buildUp -= enemySpawnChance;
-                } 
+                }
             }
+
+            LevelFinished = bossSpawned && Enemies.Count == 0;
         }
 
         void CreateBezierEnemy()

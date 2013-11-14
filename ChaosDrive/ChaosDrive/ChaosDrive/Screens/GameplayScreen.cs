@@ -23,6 +23,8 @@ using ChaosDrive.Game_Objects.Enemies;
 using ChaosDrive.Game_Objects.Effects;
 using ChaosDrive.Extensions;
 using ChaosDrive.Game_Objects.Background;
+using ChaosDriveContentLibrary;
+using ChaosDrive.Screens;
 #endregion
 
 namespace ChaosDrive
@@ -32,7 +34,7 @@ namespace ChaosDrive
     /// placeholder to get the idea across: you'll probably want to
     /// put some more interesting gameplay in here!
     /// </summary>
-    class GameplayScreen : GameScreen
+    public class GameplayScreen : GameScreen
     {
         #region Fields
 
@@ -49,11 +51,12 @@ namespace ChaosDrive
         float affectedGameTime;
         Dictionary<string, float> timeFactors;
         SpriteFont hudFont;
-        Player player;
+        PlayerController playerController;
         BulletController bulletController;
         EnemyController enemyController;
         ParticleController particleController;
         BackgroundController backgroundController;
+        string levelAsset;
 
         float pauseAlpha;
 
@@ -63,6 +66,13 @@ namespace ChaosDrive
 
         #endregion
 
+        #region Properties
+        public Dictionary<string, float> TimeFactors
+        {
+            get { return timeFactors; }
+        }
+        #endregion
+
         #region Initialization
 
 
@@ -70,7 +80,14 @@ namespace ChaosDrive
         /// Constructor.
         /// </summary>
         public GameplayScreen()
+            : this("XML\\EnemyList\\EnemiesLevel01")
         {
+            
+        }
+        public GameplayScreen(string levelAsset)
+        {
+            this.levelAsset = levelAsset;
+
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -100,15 +117,28 @@ namespace ChaosDrive
                 gameFont = content.Load<SpriteFont>("TitleFont");
                 hudFont = content.Load<SpriteFont>(@"Fonts\hudFont");
 
+                EnemyFactory.Bounds = bounds;
+
+                var enemyCues = new List<EnemyData>();
+                if (!String.IsNullOrWhiteSpace(levelAsset)) enemyCues.AddRange(content.Load<EnemyData[]>(levelAsset));
+
                 if (particleController == null) particleController = new ParticleController();
                 if (bulletController == null) bulletController = new BulletController();
-                if (enemyController == null) enemyController = new TestEnemyController(bounds, bulletController, particleController);
+                if (enemyController == null)
+                {
+                    if (enemyCues.Count > 0)
+                        enemyController = new QueuedEnemyController(bounds, bulletController, particleController, enemyCues);
+                    else
+                        enemyController = new TestEnemyController(bounds, bulletController, particleController);
+                }
                 if (backgroundController == null) backgroundController = new TestBackgroundController(bounds);
                 
-                if (player == null)
+                if (playerController == null)
                 {
                     var playerSprites = content.Load<List<Sprite>>(@"Sprites\Player\PlayerSprites");
-                    player = new Player(bounds.Center.ToVector2(), bounds, playerSprites);
+                    var hudTexture = content.Load<Texture2D>(@"Images\Player\HUDBars");
+                    var barTexture = content.Load<Texture2D>(@"Images\Player\statusBar");
+                    playerController = new PlayerController(playerSprites, bounds, hudTexture, barTexture, hudFont, enemyController, bulletController, particleController, this);
                 }
 
                 Enemy.hitEffect = content.Load<Effect>(@"Sprite Effects\HitEffect");
@@ -164,8 +194,6 @@ namespace ChaosDrive
             Microsoft.Phone.Shell.PhoneApplicationService.Current.State.Remove("EnemyPosition");
 #endif
         }
-
-
         #endregion
 
         #region Update and Draw
@@ -189,6 +217,16 @@ namespace ChaosDrive
 
             if (IsActive)
             {
+                if (playerController.GameOver)
+                {
+                    HandleGameOver();
+                }
+
+                if (enemyController.LevelFinished)
+                {
+                    HandleLevelComplete();
+                }
+
                 var timeWarpFactor = 1.0f;
                 foreach (float value in timeFactors.Values)
                 {
@@ -202,16 +240,7 @@ namespace ChaosDrive
 
                 #region Update Objects
                 #region Update Player
-                if (player != null) player.Update(elapsedTime);
-                if (!timeFactors.ContainsKey(player.UniqueName))
-                    timeFactors.Add(player.UniqueName, player.TimeAdjustment);
-                else
-                    timeFactors[player.UniqueName] = player.TimeAdjustment;
-
-                bulletController.AddBullets(player.BulletsFired);
-                player.BulletsFired.Clear();
-                player.Collide(enemyController.Enemies);
-                player.Collide(bulletController.Bullets);
+                playerController.Update(elapsedTime);
                 #endregion
 
                 #region Update Bullets
@@ -231,6 +260,16 @@ namespace ChaosDrive
                 #endregion
                 #endregion
             }
+        }
+
+        public virtual void HandleGameOver()
+        {
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new GameEndScreen("Game Over"));
+        }
+
+        public virtual void HandleLevelComplete()
+        {
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new GameEndScreen("Mission Complete!"));
         }
 
 
@@ -267,7 +306,7 @@ namespace ChaosDrive
             }
             else
             {
-                if (player != null) player.HandleInput(input, ControllingPlayer.Value);
+                playerController.HandleInput(input, ControllingPlayer.Value);
             }
         }
 
@@ -288,7 +327,7 @@ namespace ChaosDrive
             particleController.Draw(spriteBatch);
             bulletController.Draw(spriteBatch);
             enemyController.Draw(spriteBatch);
-            player.Draw(spriteBatch);
+            playerController.Draw(spriteBatch);
             DrawHUD(spriteBatch);
 
             // If the game is transitioning on or off, fade it out to black.
@@ -303,53 +342,30 @@ namespace ChaosDrive
         void DrawHUD(SpriteBatch spriteBatch)
         {
             Color timeColor = Color.Yellow;
-            Color healthColor = Color.Green;
-            Color chaosColor = Color.Green;
 
-            if (timeFactors.ContainsKey(player.UniqueName))
-                if (timeFactors[player.UniqueName] > 1.0f)
+            if (timeFactors.ContainsKey(playerController.Player.UniqueName))
+                if (timeFactors[playerController.Player.UniqueName] > 1.0f)
                     timeColor = Color.Green;
-                else if (timeFactors[player.UniqueName] < 1.0f)
+                else if (timeFactors[playerController.Player.UniqueName] < 1.0f)
                     timeColor = Color.Red;
 
-            if (player.Health < 33.0f)
-                healthColor = Color.Red;
-            else if (player.Health < 66.0f)
-                healthColor = Color.Yellow;
-
-            if (player.ChaosDriveRecharging)
-                chaosColor = Color.DarkGray;
-            else if (player.ChaosFuel < 33.0f)
-                chaosColor = Color.Red;
-            else if (player.ChaosFuel < 66.0f)
-                chaosColor = Color.Yellow;
-
             string timeString = TimeString();
-            string healthString = HealthString();
-            string chaosString = ChaosDriveString();
 
             Vector2 timePos = new Vector2(8, 8);
-            Vector2 healthPos = timePos;
-            healthPos.Y += hudFont.MeasureString(timeString).Y + 4;
-            Vector2 chaosPos = healthPos;
-            chaosPos.Y += hudFont.MeasureString(healthString).Y + 4;
 
             spriteBatch.Begin();
 
             spriteBatch.DrawString(hudFont, timeString, timePos, timeColor);
-            spriteBatch.DrawString(hudFont, healthString, healthPos, healthColor);
-            spriteBatch.DrawString(hudFont, chaosString, chaosPos, chaosColor);
-            spriteBatch.DrawString(hudFont, "Bullets: " + bulletController.Bullets.Count, new Vector2(8, chaosPos.Y + hudFont.MeasureString(chaosString).Y + 4), Color.Yellow);
+            spriteBatch.DrawString(hudFont, "Bullets: " + bulletController.Bullets.Count, new Vector2(8, timePos.Y + hudFont.MeasureString(timeString).Y + 4), Color.Yellow);
 
             spriteBatch.End();
         }
-
         #endregion
 
         string HUDString()
         {
             TimeSpan t = TimeSpan.FromMilliseconds(affectedGameTime);
-            object[] stringObjects = new object[] { t.Minutes, t.Seconds, t.Milliseconds, player.Health, player.ChaosFuel};
+            object[] stringObjects = new object[] { t.Minutes, t.Seconds, t.Milliseconds, playerController.Player.Health, playerController.Player.ChaosFuel };
             return String.Format(HUD_STRING, stringObjects);
         }
         string TimeString()
@@ -357,16 +373,6 @@ namespace ChaosDrive
             TimeSpan t = TimeSpan.FromMilliseconds(affectedGameTime);
             object[] stringObjects = new object[] { t.Minutes, t.Seconds, t.Milliseconds };
             return String.Format(TIME_STRING, stringObjects);
-        }
-        string HealthString()
-        {
-            object[] stringObjects = new object[] {  player.Health };
-            return String.Format(HEALTH_STRING, stringObjects);
-        }
-        string ChaosDriveString()
-        {
-            object[] stringObjects = new object[] {  player.ChaosFuel };
-            return String.Format(CHAOS_STRING, stringObjects);
         }
     }
 }

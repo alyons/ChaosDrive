@@ -31,7 +31,7 @@ namespace ChaosDrive.Game_Objects.Bullets
 
         public override bool Collide(ICollidable other)
         {
-            if (other is Player.Player)
+            if (other is Player.PlayerObject)
             {
                 if (ActiveSprite.Collide(other.ActiveSprite))
                 {

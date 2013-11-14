@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ChaosDrive.Game_Objects.Bullets;
 using ChaosDrive.Game_Objects.Effects;
 using ChaosDrive.Extensions;
+using ChaosDrive.Game_Objects.Player;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -19,6 +20,11 @@ namespace ChaosDrive.Game_Objects.Enemies
         #endregion
 
         #region Properties
+        public bool LevelFinished
+        {
+            get;
+            set;
+        }
         public List<Enemy> Enemies
         {
             get { return enemies; }
@@ -33,6 +39,16 @@ namespace ChaosDrive.Game_Objects.Enemies
             get;
             set;
         }
+        PlayerController PlayerController
+        {
+            get;
+            set;
+        }
+        public Vector2 PlayerPosition
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Constructors
@@ -42,6 +58,8 @@ namespace ChaosDrive.Game_Objects.Enemies
             random = new Random();
             BulletController = bulletController;
             ParticleController = particleController;
+            PlayerPosition = new Vector2(0, 0);
+            LevelFinished = false;
             this.bounds = bounds;
         }
         #endregion
@@ -67,6 +85,9 @@ namespace ChaosDrive.Game_Objects.Enemies
                         ParticleController.Particles.Add(new Particle(center, partVel, Color.Red));
                     }
                 }
+
+                enemy.ShotsFired -= Enemy_ShotsFired;
+                //enemy.DisposeObjects();
             }
 
             enemies.RemoveAll(e => e.ShouldRemove);
@@ -94,6 +115,10 @@ namespace ChaosDrive.Game_Objects.Enemies
                     enemy.Collide(bullet);
                 }
             }
+        }
+        public virtual void Enemy_ShotsFired(object sender, EnemyShootingEventArgs e)
+        {
+            BulletController.AddBullets(e.Bullets);
         }
         #endregion
     }

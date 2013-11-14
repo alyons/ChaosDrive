@@ -17,6 +17,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         protected Vector2 position;
         protected bool shouldRemove;
         protected Rectangle bounds;
+        bool isDisposed = false;
 
         public abstract Sprite ActiveSprite
         {
@@ -31,6 +32,15 @@ namespace ChaosDrive.Game_Objects.Enemies
         {
             get { return health; }
         }
+        public virtual EnemyController EnemyController
+        {
+            get;
+            set;
+        }
+
+        public event EnemyShootingEventHandler ShotsFired;
+ 
+        public delegate void EnemyShootingEventHandler(object sender, EnemyShootingEventArgs e);
 
         public Enemy(Rectangle bounds, Vector2 pos, float health)
         {
@@ -43,7 +53,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         {
             if (ActiveSprite.Collide(other.ActiveSprite))
             {
-                if (other is Player.Player)
+                if (other is Player.PlayerObject)
                 {
                     return true;
                 }
@@ -93,7 +103,23 @@ namespace ChaosDrive.Game_Objects.Enemies
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            ActiveSprite.Draw(spriteBatch);
+            if (ActiveSprite != null && !isDisposed) ActiveSprite.Draw(spriteBatch);
+        }
+        public virtual void DisposeObjects()
+        {
+            isDisposed = true;
+        }
+        protected virtual void OnShotsFired()
+        {
+            OnShotsFired(new EnemyShootingEventArgs(new List<Bullet>()));
+        }
+        protected void OnShotsFired(EnemyShootingEventArgs args)
+        {
+            var handler = ShotsFired;
+            if (handler != null)
+            {
+                handler(this, args);
+            }
         }
     }
 }
