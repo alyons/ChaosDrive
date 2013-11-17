@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using SpriteLibrary;
 using ChaosDrive.Utility;
+using ChaosDriveContentLibrary;
+using ChaosDrive.Game_Objects.Bullets;
 
 namespace ChaosDrive.Game_Objects.Enemies
 {
@@ -16,7 +18,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         Vector2 velocity;
         List<Vector2[]> bezierCurves;
         List<float> runTimes;
-        List<float> shotTimes;
+        List<EnemyBulletData> bullets;
         float currentTime;
         float activeRunTime;
         int currentCurve;
@@ -35,7 +37,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         #endregion
 
         #region Constructors
-        public StandardEnemy(Rectangle bounds, List<Vector2[]> bezierCurves, List<float> runTimes, List<float> shotTimes)
+        public StandardEnemy(Rectangle bounds, List<Vector2[]> bezierCurves, List<float> runTimes, List<EnemyBulletData> bullets)
             : base (bounds, bezierCurves[0][0], 100)
         {
             velocity = new Vector2();
@@ -47,8 +49,8 @@ namespace ChaosDrive.Game_Objects.Enemies
             this.bezierCurves.AddRange(bezierCurves);
             this.runTimes = new List<float>();
             this.runTimes.AddRange(runTimes);
-            this.shotTimes = new List<float>();
-            this.shotTimes.AddRange(shotTimes);
+            this.bullets = new List<EnemyBulletData>();
+            this.bullets.AddRange(bullets);
         }
         #endregion
 
@@ -58,20 +60,11 @@ namespace ChaosDrive.Game_Objects.Enemies
             activeRunTime += elapsedTime;
             currentTime += elapsedTime;
 
-            float t = activeRunTime / runTimes[currentCurve];
-            if (t <= 1.0)
+            if (currentCurve < bezierCurves.Count)
             {
-                var nextPos = ChaosDriveMath.CalculateBezierCurveLocation(bezierCurves[currentCurve], t);
-
-                velocity = nextPos - position;
-                position = nextPos;
-            }
-            else
-            {
-                currentCurve++;
-                if (currentCurve < bezierCurves.Count)
+                float t = activeRunTime / runTimes[currentCurve];
+                if (t <= 1.0)
                 {
-                    t -= 1.0f;
                     var nextPos = ChaosDriveMath.CalculateBezierCurveLocation(bezierCurves[currentCurve], t);
 
                     velocity = nextPos - position;
@@ -79,16 +72,28 @@ namespace ChaosDrive.Game_Objects.Enemies
                 }
                 else
                 {
-                    position += velocity;
+                    activeRunTime -= runTimes[currentCurve];
+                    currentCurve++;
+                    if (currentCurve < bezierCurves.Count)
+                    {
+                        t = activeRunTime / runTimes[currentCurve];
+                        var nextPos = ChaosDriveMath.CalculateBezierCurveLocation(bezierCurves[currentCurve], t);
+
+                        velocity = nextPos - position;
+                        position = nextPos;
+                    }
                 }
             }
-
-            if (shotTimes.Count > 0)
+            else
             {
-                if (currentTime > shotTimes.First())
+                position += velocity;
+            }
+
+            if (bullets.Count > 0)
+            {
+                if (bullets.Any(b => b.LaunchTime < currentTime))
                 {
                     OnShotsFired();
-                    shotTimes.RemoveAt(0);
                 }
             }
 
@@ -100,12 +105,15 @@ namespace ChaosDrive.Game_Objects.Enemies
             if (health <= 0) shouldRemove = true;
             if (currentCurve >= bezierCurves.Count && activeRunTime >= runTimes.Last() && !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
         }
-        public override void DisposeObjects()
+        protected override void OnShotsFired()
         {
-            EnemyController = null;
-            sprite.Dispose();
+            var bulletList = new List<Bullet>();
+            foreach(EnemyBulletData data in bullets.FindAll(b => b.LaunchTime < currentTime))
+                bulletList.Add(BulletFactory.GenerateEnemyBulletFromData(position, data));
 
-            base.DisposeObjects();
+            bullets.RemoveAll(b => b.LaunchTime < currentTime);
+
+            OnShotsFired(new EnemyShootingEventArgs(bulletList));
         }
         #endregion
     }

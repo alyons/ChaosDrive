@@ -18,6 +18,7 @@ namespace ChaosDrive.Game_Objects.Enemies
         protected bool shouldRemove;
         protected Rectangle bounds;
         bool isDisposed = false;
+        object disposalLock = new object();
 
         public abstract Sprite ActiveSprite
         {
@@ -51,22 +52,28 @@ namespace ChaosDrive.Game_Objects.Enemies
 
         public virtual bool Collide(ICollidable other)
         {
-            if (ActiveSprite.Collide(other.ActiveSprite))
+            lock (disposalLock)
             {
-                if (other is Player.PlayerObject)
+                if (!isDisposed)
                 {
-                    return true;
-                }
-
-                if (other is Bullet)
-                {
-                    if ((other as Bullet).IsPlayerBullet)
+                    if (ActiveSprite.Collide(other.ActiveSprite))
                     {
-                        health -= (other as Bullet).Damage;
-                        shouldRemove = health <= 0;
-                        hitPercent = 1.0f;
-                        (other as Bullet).ShouldRemove = true;
-                        return true;
+                        if (other is Player.PlayerObject)
+                        {
+                            return true;
+                        }
+
+                        if (other is Bullet)
+                        {
+                            if ((other as Bullet).IsPlayerBullet)
+                            {
+                                health -= (other as Bullet).Damage;
+                                shouldRemove = health <= 0;
+                                hitPercent = 1.0f;
+                                (other as Bullet).ShouldRemove = true;
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -79,9 +86,9 @@ namespace ChaosDrive.Game_Objects.Enemies
         }
         public virtual void Update(float elapsedTime)
         {
-            UpdateHitEffect(elapsedTime);
-            ActiveSprite.Update(elapsedTime);
-            ActiveSprite.Position = position;
+            if (!isDisposed && ActiveSprite != null) UpdateHitEffect(elapsedTime);
+            if (!isDisposed && ActiveSprite != null) ActiveSprite.Update(elapsedTime);
+            if (!isDisposed && ActiveSprite != null) ActiveSprite.Position = position;
 
             if (health <= 0 || !ActiveSprite.Bounds.Intersects(bounds)) shouldRemove = true;
         }
@@ -107,7 +114,12 @@ namespace ChaosDrive.Game_Objects.Enemies
         }
         public virtual void DisposeObjects()
         {
-            isDisposed = true;
+            lock (disposalLock)
+            {
+                EnemyController = null;
+                if (ActiveSprite != null) ActiveSprite.Dispose();
+                isDisposed = true;
+            }
         }
         protected virtual void OnShotsFired()
         {

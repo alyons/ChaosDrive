@@ -86,7 +86,8 @@
     <Compile Include="Game Objects\Background\TestBackgroundController.cs" />
     <Compile Include="Game Objects\Bullets\Bullet.cs" />
     <Compile Include="Game Objects\Bullets\BulletController.cs" />
-    <Compile Include="Game Objects\Bullets\EnemyBullet.cs" />
+    <Compile Include="Game Objects\Bullets\BulletFactory.cs" />
+    <Compile Include="Game Objects\Bullets\DirectedEnemyBullet.cs" />
     <Compile Include="Game Objects\Bullets\PlayerBullet.cs" />
     <Compile Include="Game Objects\Effects\Particle.cs" />
     <Compile Include="Game Objects\Effects\ParticleController.cs" />

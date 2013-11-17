@@ -11,7 +11,7 @@ namespace ChaosDriveContentLibrary
         #region Properties
         public List<Vector2[]> BezierCurves { get; set; }
         public List<float> RunTimes { get; set; }
-        public List<float> ShotTimes { get; set; }
+        public List<EnemyBulletData> Bullets { get; set; }
         #endregion
     }
 }

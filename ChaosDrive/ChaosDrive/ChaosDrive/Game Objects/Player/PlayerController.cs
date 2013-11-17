@@ -156,6 +156,8 @@ namespace ChaosDrive.Game_Objects.Player
                 }
             }
 
+            BulletFactory.PlayerPosition = lastPlayerPosition;
+
             GameOver = lives <= 0;
         }
         public void HandleInput(InputState input, PlayerIndex controllingPlayer)

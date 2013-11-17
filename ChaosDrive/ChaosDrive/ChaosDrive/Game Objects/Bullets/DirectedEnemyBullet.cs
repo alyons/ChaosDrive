@@ -9,7 +9,7 @@ using ChaosDrive.Game_Objects.Player;
 
 namespace ChaosDrive.Game_Objects.Bullets
 {
-    public class EnemyBullet : Bullet
+    public class DirectedEnemyBullet : Bullet
     {
         public static Sprite baseSprite;
         Sprite bulletSprite;
@@ -20,11 +20,11 @@ namespace ChaosDrive.Game_Objects.Bullets
             get { return bulletSprite; }
         }
 
-        public EnemyBullet(Vector2 pos, Vector2 playerPos, Rectangle bounds)
+        public DirectedEnemyBullet(Vector2 pos, Vector2 playerPos, Rectangle bounds)
             : base(pos, 20.0f, false, bounds)
         {
             bulletSprite = baseSprite.Copy();
-            velocity = (pos - playerPos);
+            velocity = (playerPos - pos);
             velocity.Normalize();
             velocity = velocity.Multiply(200);
         }

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[string]">
+    <Item>0 0 8 8</Item>
+  </Asset>
+</XnaContent>
+

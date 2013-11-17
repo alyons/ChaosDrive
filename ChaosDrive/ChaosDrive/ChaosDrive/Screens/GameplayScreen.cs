@@ -118,6 +118,7 @@ namespace ChaosDrive
                 hudFont = content.Load<SpriteFont>(@"Fonts\hudFont");
 
                 EnemyFactory.Bounds = bounds;
+                BulletFactory.Bounds = bounds;
 
                 var enemyCues = new List<EnemyData>();
                 if (!String.IsNullOrWhiteSpace(levelAsset)) enemyCues.AddRange(content.Load<EnemyData[]>(levelAsset));
@@ -143,7 +144,9 @@ namespace ChaosDrive
 
                 Enemy.hitEffect = content.Load<Effect>(@"Sprite Effects\HitEffect");
                 PlayerBullet.baseSprite = content.Load<Sprite>(@"Sprites\Bullets\PlayerBullet");
+                DirectedEnemyBullet.baseSprite = content.Load<Sprite>(@"Sprites\Bullets\EnemyBullet");
                 BasicEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
+                StandardEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
                 BezierCurveEnemy.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\BasicEnemy");
                 Particle.baseTexture = content.Load<Texture2D>(@"Images\Effects\fire_particle");
                 SimpleBoss.baseSprite = content.Load<Sprite>(@"Sprites\Enemies\SimpleBoss");

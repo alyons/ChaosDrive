@@ -44,7 +44,7 @@ namespace ChaosDrive.Game_Objects.Enemies
                 case "StandardEnemy":
                     {
                         StandardEnemyData someData = jsonSerializer.Deserialize<StandardEnemyData>(enemyData.data);
-                        return new StandardEnemy(bounds, someData.BezierCurves, someData.RunTimes, someData.ShotTimes);
+                        return new StandardEnemy(bounds, someData.BezierCurves, someData.RunTimes, someData.Bullets);
                     }
                 case "BezierCurveEnemy":
                     {

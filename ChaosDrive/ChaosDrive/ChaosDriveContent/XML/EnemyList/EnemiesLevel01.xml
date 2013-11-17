@@ -2,9 +2,9 @@
 <XnaContent>
   <Asset Type="ChaosDriveContentLibrary.EnemyData[]">
     <Item>
-      <enemyType>BasicEnemy</enemyType>
+      <enemyType>StandardEnemy</enemyType>
       <appearanceTime>5000</appearanceTime>
-      <data>{"X" : 640, "Y" : 0}</data>
+      <data>{"BezierCurves":[[{"X":0,"Y":0},{"X":640,"Y":960},{"X":1280,"Y":0}]],"RunTimes":[5000],"Bullets":[{"Damage":50,"LaunchTime":2500,"Target":"Player","Data":null}]}</data>
     </Item>
     <Item>
       <enemyType>BasicEnemy</enemyType>
